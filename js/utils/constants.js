@@ -74,19 +74,19 @@ function calculateResponsiveParams() {
     const viewportHeight = window.innerHeight;
     let scale = 1;
 
-    // 320-440px 区间自动缩放
+    // 移动端 320-440px 区间自动缩放
     if (viewportWidth <= 440) {
-        scale = Math.max(0.6, (viewportWidth - 20) / 320);
+        scale = Math.max(0.5, (viewportWidth - 20) / 320);
     }
 
     // 横屏特殊处理 (宽度大于高度且在移动设备范围)
     if (viewportWidth > viewportHeight && viewportWidth <= 896) {
-        scale = Math.max(0.5, (viewportHeight - 140) / 600);
+        scale = Math.max(0.45, (viewportHeight - 100) / 600);
     }
 
-    // 桌面端但窗口较小
-    if (viewportWidth > 440 && viewportWidth < 768) {
-        scale = Math.max(0.8, (viewportWidth - 20) / 400);
+    // 平板/桌面端但窗口较小 440-768px
+    if (viewportWidth > 440 && viewportWidth <= 768) {
+        scale = Math.max(0.7, (viewportWidth - 40) / 400);
     }
 
     return {

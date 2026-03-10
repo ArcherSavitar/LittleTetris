@@ -181,13 +181,8 @@ LittleTetris/
 
 ## 联系方式
 
-- 作者: LittleTetris Team
 - 在线体验: [https://archersavitar.github.io/LittleTetris/](https://archersavitar.github.io/LittleTetris/)
 - GitHub: [https://github.com/ArcherSavitar/LittleTetris](https://github.com/ArcherSavitar/LittleTetris)
 - 问题反馈: [https://github.com/ArcherSavitar/LittleTetris/issues](https://github.com/ArcherSavitar/LittleTetris/issues)
 
 ---
-
-<p align="center">
-  Made with ❤️ by LittleTetris Team
-</p>
