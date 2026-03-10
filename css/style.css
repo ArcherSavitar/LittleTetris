@@ -94,3 +94,258 @@ body {
         margin-top: 10px;
     }
 }
+
+/* ==================== 移动端响应式布局 ==================== */
+
+:root {
+    --base-size: 16px;
+    --block-size: 30px;
+    --board-width: 300px;
+    --board-height: 600px;
+    --scale-factor: 1;
+    --info-panel-width: 140px;
+}
+
+/* 游戏容器包裹层 */
+.game-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* 移动端触控控件 - 默认隐藏 */
+#touch-controls {
+    display: none;
+    width: 100%;
+    max-width: 400px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    margin-top: 10px;
+    box-sizing: border-box;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* 十字键布局 */
+.dpad {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dpad-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* 触控按钮基础样式 */
+.touch-btn {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    border: 2px solid rgba(51, 51, 51, 0.3);
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.1s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    padding: 0;
+}
+
+.touch-btn:active,
+.touch-btn.active {
+    background: rgba(51, 51, 51, 0.2);
+    transform: scale(0.95);
+}
+
+.btn-icon {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 硬降按钮 - 更大更显眼 */
+.hard-drop {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 59, 48, 0.15);
+    border-color: rgba(255, 59, 48, 0.4);
+}
+
+.hard-drop .btn-icon {
+    color: #ff3b30;
+    font-size: 32px;
+}
+
+/* 仅在移动端或触屏设备显示触控控件 */
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+    #touch-controls {
+        display: flex;
+    }
+
+    .game-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .info-panel {
+        position: static;
+        width: 100%;
+        max-width: var(--board-width);
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .stats {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 8px;
+    }
+
+    .stats div {
+        font-size: clamp(12px, 3vw, 16px);
+        margin: 0;
+    }
+
+    .next-piece-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+    }
+
+    .next-piece-label {
+        font-size: clamp(12px, 2.5vw, 14px);
+    }
+
+    #nextPiece {
+        width: 60px;
+        height: 60px;
+    }
+
+    .controls {
+        display: none;
+    }
+
+    .button-panel {
+        position: static;
+        margin-top: 8px;
+    }
+
+    #board {
+        border-width: 2px;
+    }
+}
+
+/* 竖屏模式 */
+@media (orientation: portrait) and (max-width: 440px) {
+    #touch-controls {
+        height: 120px;
+        max-height: 120px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .game-wrapper {
+        padding: 5px;
+    }
+
+    #board {
+        width: calc(var(--board-width) * var(--scale-factor));
+        height: calc(var(--board-height) * var(--scale-factor));
+    }
+}
+
+/* 横屏模式 */
+@media (orientation: landscape) and (max-height: 500px) {
+    .game-wrapper {
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        padding: 5px 10px;
+    }
+
+    .game-container {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    #touch-controls {
+        display: flex;
+        height: 90px;
+        max-height: 90px;
+        flex-direction: column;
+        margin-top: 0;
+        padding: 5px;
+    }
+
+    .dpad {
+        gap: 4px;
+    }
+
+    .touch-btn {
+        width: 48px;
+        height: 48px;
+    }
+
+    .hard-drop {
+        width: 60px;
+        height: 60px;
+    }
+
+    .btn-icon {
+        font-size: 20px;
+    }
+
+    .hard-drop .btn-icon {
+        font-size: 24px;
+    }
+
+    .info-panel {
+        position: absolute;
+        top: 0;
+        right: -120px;
+        width: 110px;
+    }
+
+    .stats div {
+        font-size: 12px;
+    }
+
+    .controls {
+        font-size: 11px;
+    }
+
+    #nextPiece {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+/* 字体平滑缩放 */
+.stats div,
+.next-piece-label,
+.controls p {
+    font-size: clamp(12px, 2.5vw, 18px);
+}
+
+/* 按钮字体大小 */
+.control-button {
+    font-size: clamp(14px, 3vw, 18px);
+}

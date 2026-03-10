@@ -67,3 +67,40 @@ const LEVEL_SPEED = [
     1000, 920, 840, 760, 680, 600, 520, 440, 360, 280,
     200, 160, 120, 80, 40, 20, 10, 5, 0, 0
 ];
+
+// 响应式参数计算函数
+function calculateResponsiveParams() {
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    let scale = 1;
+
+    // 320-440px 区间自动缩放
+    if (viewportWidth <= 440) {
+        scale = Math.max(0.6, (viewportWidth - 20) / 320);
+    }
+
+    // 横屏特殊处理 (宽度大于高度且在移动设备范围)
+    if (viewportWidth > viewportHeight && viewportWidth <= 896) {
+        scale = Math.max(0.5, (viewportHeight - 140) / 600);
+    }
+
+    // 桌面端但窗口较小
+    if (viewportWidth > 440 && viewportWidth < 768) {
+        scale = Math.max(0.8, (viewportWidth - 20) / 400);
+    }
+
+    return {
+        scale: scale,
+        blockSize: Math.floor(30 * scale),
+        boardWidth: Math.floor(300 * scale),
+        boardHeight: Math.floor(600 * scale),
+        nextPieceSize: Math.floor(120 * scale)
+    };
+}
+
+// 检测是否为移动设备/触屏设备
+function isTouchDevice() {
+    return (('ontouchstart' in window) ||
+            (navigator.maxTouchPoints > 0) ||
+            (navigator.msMaxTouchPoints > 0));
+}

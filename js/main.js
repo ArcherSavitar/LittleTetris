@@ -1,5 +1,34 @@
 // 主入口文件
 document.addEventListener('DOMContentLoaded', () => {
+    // 响应式参数更新函数
+    function handleResize() {
+        const params = calculateResponsiveParams();
+
+        // 更新 CSS 变量
+        document.documentElement.style.setProperty('--scale-factor', params.scale);
+
+        // 更新 Canvas 尺寸
+        if (window.game && window.game.ui) {
+            window.game.ui.resizeCanvas();
+            window.game.render();
+        }
+
+        // 移动端横屏/竖屏切换
+        const isLandscape = window.innerWidth > window.innerHeight;
+        document.body.classList.toggle('landscape', isLandscape);
+        document.body.classList.toggle('portrait', !isLandscape);
+    }
+
+    // 监听窗口大小变化
+    window.addEventListener('resize', handleResize);
+    // 监听屏幕方向变化
+    window.addEventListener('orientationchange', () => {
+        setTimeout(handleResize, 100);
+    });
+
+    // 初始化响应式参数
+    handleResize();
+
     // 初始化游戏
     window.game = new Game();
 

@@ -22,6 +22,7 @@ class Game {
         this.createNewPiece();
         this.createNewPiece(); // 生成下一个方块
         this.bindEvents();
+        this.initTouchControls();
     }
 
     // 开始游戏
@@ -83,6 +84,117 @@ class Game {
                 event.preventDefault();
             }
         });
+    }
+
+    // 初始化触摸控件
+    initTouchControls() {
+        // 防止触摸时的默认行为和300ms延迟
+        document.addEventListener('touchstart', (e) => {
+            if (e.target.classList.contains('touch-btn')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // 左移
+        this.bindTouchButton('btn-left', () => {
+            if (!this.isPaused && !this.gameOver && this.currentPiece) {
+                this.currentPiece.moveLeft(this.board);
+            }
+        });
+
+        // 右移
+        this.bindTouchButton('btn-right', () => {
+            if (!this.isPaused && !this.gameOver && this.currentPiece) {
+                this.currentPiece.moveRight(this.board);
+            }
+        });
+
+        // 下移 (软降)
+        this.bindTouchButton('btn-down', () => {
+            if (!this.isPaused && !this.gameOver && this.currentPiece) {
+                this.currentPiece.moveDown(this.board);
+            }
+        });
+
+        // 旋转
+        this.bindTouchButton('btn-rotate', () => {
+            if (!this.isPaused && !this.gameOver && this.currentPiece) {
+                this.currentPiece.tryRotate(this.board);
+            }
+        });
+
+        // 硬降 - 与空格键行为完全一致
+        this.bindTouchButton('btn-harddrop', () => {
+            if (!this.isPaused && !this.gameOver && this.currentPiece) {
+                const dropDistance = this.currentPiece.hardDrop(this.board);
+                this.board.score += dropDistance * 2 * this.board.level;
+                // 立即锁定方块
+                this.lockPiece();
+            }
+        });
+    }
+
+    // 绑定触摸按钮事件
+    bindTouchButton(id, action) {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+
+        // 保存事件处理器引用以便移除
+        if (!this.touchHandlers) {
+            this.touchHandlers = {};
+        }
+
+        const handleStart = (e) => {
+            e.preventDefault();
+            if (this.isStarted && !this.gameOver && !this.isPaused) {
+                action();
+            }
+            btn.classList.add('active');
+        };
+
+        const handleEnd = (e) => {
+            e.preventDefault();
+            btn.classList.remove('active');
+        };
+
+        // 支持 touchstart/touchend，兼容 mouse 事件
+        btn.addEventListener('touchstart', handleStart, { passive: false });
+        btn.addEventListener('touchend', handleEnd, { passive: false });
+        btn.addEventListener('mousedown', handleStart);
+        btn.addEventListener('mouseup', handleEnd);
+        btn.addEventListener('mouseleave', handleEnd);
+
+        // 保存处理器引用
+        this.touchHandlers[id] = { handleStart, handleEnd };
+    }
+
+    // 锁定方块（硬降后立即调用）
+    lockPiece() {
+        if (!this.currentPiece) return;
+
+        this.board.placeTetromino(this.currentPiece);
+        this.board.clearLines();
+        this.createNewPiece();
+        this.dropInterval = this.board.getCurrentSpeed();
+        this.dropCounter = 0;
+    }
+
+    // 移除触摸控件事件监听
+    removeTouchControls() {
+        if (!this.touchHandlers) return;
+
+        Object.keys(this.touchHandlers).forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                const { handleStart, handleEnd } = this.touchHandlers[id];
+                btn.removeEventListener('touchstart', handleStart);
+                btn.removeEventListener('touchend', handleEnd);
+                btn.removeEventListener('mousedown', handleStart);
+                btn.removeEventListener('mouseup', handleEnd);
+                btn.removeEventListener('mouseleave', handleEnd);
+            }
+        });
+        this.touchHandlers = {};
     }
 
     // 创建新方块
@@ -201,9 +313,3 @@ class Game {
         this.gameLoop(0);
     }
 }
-
-// 启动游戏
-let game;
-window.onload = function() {
-    game = new Game();
-};

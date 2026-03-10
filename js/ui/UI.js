@@ -16,14 +16,42 @@ class UI {
 
     // 设置画布比例
     setCanvasScale() {
-        // 设置主游戏板画布大小
-        this.boardCtx.scale(BLOCK_SIZE, BLOCK_SIZE);
+        const params = calculateResponsiveParams();
 
-        // 不再在这里设置 nextPiece 的缩放，而是在渲染时单独处理
+        // 更新主画布尺寸
+        this.boardCanvas.width = params.boardWidth;
+        this.boardCanvas.height = params.boardHeight;
+
+        // 更新 nextPiece 画布尺寸
+        this.nextPieceCanvas.width = params.nextPieceSize;
+        this.nextPieceCanvas.height = params.nextPieceSize;
+
+        // 设置主游戏板缩放
+        this.boardCtx.scale(params.blockSize, params.blockSize);
+    }
+
+    // 重新设置画布尺寸（响应式）
+    resizeCanvas() {
+        const params = calculateResponsiveParams();
+
+        // 重置变换矩阵
+        this.boardCtx.setTransform(1, 0, 0, 1, 0, 0);
+        this.nextPieceCtx.setTransform(1, 0, 0, 1, 0, 0);
+
+        // 更新画布尺寸
+        this.boardCanvas.width = params.boardWidth;
+        this.boardCanvas.height = params.boardHeight;
+        this.nextPieceCanvas.width = params.nextPieceSize;
+        this.nextPieceCanvas.height = params.nextPieceSize;
+
+        // 重新设置缩放
+        this.boardCtx.scale(params.blockSize, params.blockSize);
     }
 
     // 渲染整个游戏画面
     render() {
+        const params = calculateResponsiveParams();
+
         // 保存Canvas状态以避免累积变换
         this.boardCtx.save();
 
@@ -34,8 +62,8 @@ class UI {
         this.boardCtx.fillStyle = '#fff'; // 白色背景
         this.boardCtx.fillRect(0, 0, this.boardCanvas.width, this.boardCanvas.height);
 
-        // 重新应用缩放
-        this.boardCtx.scale(BLOCK_SIZE, BLOCK_SIZE);
+        // 重新应用缩放（使用动态块大小）
+        this.boardCtx.scale(params.blockSize, params.blockSize);
 
         // 渲染游戏板
         this.renderBoard();
@@ -91,6 +119,8 @@ class UI {
 
     // 渲染下一个方块
     renderNextPiece() {
+        const params = calculateResponsiveParams();
+
         // 保存Canvas状态
         this.nextPieceCtx.save();
 
@@ -103,8 +133,8 @@ class UI {
 
         if (this.game.nextPiece) {
             // 计算居中的偏移量
-            // 根据方块实际尺寸计算适当的缩放比例，使方块在120x120的画布中适中显示
-            const blockSize = 20; // 增大方块显示尺寸
+            // 根据方块实际尺寸计算适当的缩放比例
+            const blockSize = Math.max(12, Math.floor(params.nextPieceSize / 6));
 
             // 计算方块的宽高
             const pieceWidth = this.game.nextPiece.shape[0].length * blockSize;
@@ -153,6 +183,9 @@ class UI {
 
     // 渲染游戏结束画面
     renderGameOver() {
+        const params = calculateResponsiveParams();
+        const fontSize = Math.max(12, Math.floor(params.blockSize * 0.5));
+
         // 在游戏板中央显示游戏结束文字
         this.boardCtx.save();
         this.boardCtx.setTransform(1, 0, 0, 1, 0, 0); // 重置变换
@@ -164,7 +197,7 @@ class UI {
             30
         );
 
-        this.boardCtx.font = '16px Arial';
+        this.boardCtx.font = fontSize + 'px Arial';
         this.boardCtx.fillStyle = 'white';
         this.boardCtx.textAlign = 'center';
         this.boardCtx.textBaseline = 'middle';
@@ -174,6 +207,9 @@ class UI {
 
     // 渲染暂停画面
     renderPause() {
+        const params = calculateResponsiveParams();
+        const fontSize = Math.max(12, Math.floor(params.blockSize * 0.5));
+
         // 在游戏板中央显示暂停文字
         this.boardCtx.save();
         this.boardCtx.setTransform(1, 0, 0, 1, 0, 0); // 重置变换
@@ -185,7 +221,7 @@ class UI {
             30
         );
 
-        this.boardCtx.font = '16px Arial';
+        this.boardCtx.font = fontSize + 'px Arial';
         this.boardCtx.fillStyle = 'white';
         this.boardCtx.textAlign = 'center';
         this.boardCtx.textBaseline = 'middle';

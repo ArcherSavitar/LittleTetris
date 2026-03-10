@@ -2,42 +2,67 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <title>LittleTetris</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="game-container">
-        <canvas id="board" width="300" height="600"></canvas>
+    <div class="game-wrapper">
+        <div class="game-container">
+            <canvas id="board" width="300" height="600"></canvas>
 
-        <!-- 右上角信息区域 -->
-        <div class="info-panel">
-            <div class="stats">
-                <div class="score">得分: <span id="score">0</span></div>
-                <div class="level">等级: <span id="level">1</span></div>
-                <div class="lines">消除行数: <span id="lines">0</span></div>
-            </div>
-            <div class="next-piece-container">
-                <div class="next-piece-label">下一个:</div>
-                <canvas id="nextPiece" width="120" height="120"></canvas>
+            <!-- 右上角信息区域 -->
+            <div class="info-panel">
+                <div class="stats">
+                    <div class="score">得分: <span id="score">0</span></div>
+                    <div class="level">等级: <span id="level">1</span></div>
+                    <div class="lines">消除行数: <span id="lines">0</span></div>
+                </div>
+                <div class="next-piece-container">
+                    <div class="next-piece-label">下一个:</div>
+                    <canvas id="nextPiece" width="120" height="120"></canvas>
+                </div>
+
+                <!-- 右侧控制说明 -->
+                <div class="controls">
+                    <p>控制说明:</p>
+                    <p>← → : 左右移动</p>
+                    <p>↑ : 旋转</p>
+                    <p>↓ : 软降</p>
+                    <p>空格 : 硬降</p>
+                    <p>P : 暂停</p>
+                </div>
             </div>
 
-            <!-- 右侧控制说明 -->
-            <div class="controls">
-                <p>控制说明:</p>
-                <p>← → : 左右移动</p>
-                <p>↑ : 旋转</p>
-                <p>↓ : 软降</p>
-                <p>空格 : 硬降</p>
-                <p>P : 暂停</p>
+            <!-- 右下角按钮区域 -->
+            <div class="button-panel">
+                <button id="startButton" class="control-button">开始游戏</button>
+                <button id="pauseButton" class="control-button hidden">暂停游戏</button>
+                <button id="endButton" class="control-button hidden">结束游戏</button>
             </div>
         </div>
 
-        <!-- 右下角按钮区域 -->
-        <div class="button-panel">
-            <button id="startButton" class="control-button">开始游戏</button>
-            <button id="pauseButton" class="control-button hidden">暂停游戏</button>
-            <button id="endButton" class="control-button hidden">结束游戏</button>
+        <!-- 移动端虚拟触控控件 -->
+        <div id="touch-controls">
+            <div class="dpad">
+                <button id="btn-left" class="touch-btn" aria-label="左移">
+                    <span class="btn-icon">←</span>
+                </button>
+                <div class="dpad-vertical">
+                    <button id="btn-rotate" class="touch-btn" aria-label="旋转">
+                        <span class="btn-icon">↻</span>
+                    </button>
+                    <button id="btn-down" class="touch-btn" aria-label="下移">
+                        <span class="btn-icon">↓</span>
+                    </button>
+                </div>
+                <button id="btn-right" class="touch-btn" aria-label="右移">
+                    <span class="btn-icon">→</span>
+                </button>
+            </div>
+            <button id="btn-harddrop" class="touch-btn hard-drop" aria-label="硬降">
+                <span class="btn-icon">▼</span>
+            </button>
         </div>
     </div>
     <script src="js/utils/constants.js"></script>
